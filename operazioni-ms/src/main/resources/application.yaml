@@ -1,0 +1,22 @@
+application:
+    name: operazioni-ms
+    
+server:
+    port: 8080
+    
+endpoint:
+    base: https://sandbox.platfr.io/api/gbs/banking/v4.0/accounts
+    name:
+        operazioni: GestioneOperazioni
+    getSaldo: /${credenziali.accountId}/balance
+    moneyTransfer: /${credenziali.accountId}/payments/money-transfers
+    getTransazione: /${credenziali.accountId}/transactions
+    
+credenziali:
+    accountId: 14537780
+    header:
+        auth-Schema: S2S
+        api-Key: FXOVVXXHVCPVPBZXIJOBGUGSKHDNFRRQJP
+        timezone: Europe/Rome
+    idChiave: 3202
+    

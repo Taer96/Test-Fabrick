@@ -1,0 +1,18 @@
+### Common ###
+
+*/.sts4-cache/
+
+### Eclipse ###
+
+.metadata
+bin/
+tmp/
+*.tmp
+*.war
+*.jar
+*.bak
+*.swp
+*~.nib
+.settings/
+.loadpath
+.recommenders
