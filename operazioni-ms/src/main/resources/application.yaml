@@ -10,7 +10,7 @@ endpoint:
         operazioni: GestioneOperazioni
     getSaldo: /${credenziali.accountId}/balance
     moneyTransfer: /${credenziali.accountId}/payments/money-transfers
-    getTransazione: /${credenziali.accountId}/transactions
+    getTransazioni: /${credenziali.accountId}/transactions
     
 credenziali:
     accountId: 14537780
