@@ -3,6 +3,8 @@ application:
     
 server:
     port: 8080
+    servlet:
+        context-path: /operazioni-ms
     
 endpoint:
     base: https://sandbox.platfr.io/api/gbs/banking/v4.0/accounts

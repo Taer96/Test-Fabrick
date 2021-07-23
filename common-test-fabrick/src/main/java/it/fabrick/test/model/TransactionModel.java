@@ -1,4 +1,4 @@
-package it.fabrick.test.dto;
+package it.fabrick.test.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,16 +8,17 @@ import it.fabrick.test.utility.CurrencyEnum;
 import lombok.Data;
 
 @Data
-public class TransactionDTO implements Serializable {
+public class TransactionModel implements Serializable {
 
-	private static final long serialVersionUID = 220395386195565859L;
+	private static final long serialVersionUID = -3268457220192031883L;
+	private Long accountId;
 	private Long transactionId;
 	private String operationId;
 	@CustomDate
 	private Date accountingDate;
 	@CustomDate
 	private Date valueDate;
-	private ValueDTO type;
+	private ValueModel type;
 	private Float amount;
 	private CurrencyEnum currency;
 	private String description;

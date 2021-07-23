@@ -5,4 +5,5 @@ public class EndpointConstants {
 	public static final String BASE_URL = "api/ops/";
 	
 	public static final String SALDO = "{accountId}/saldo";
+	public static final String TRANSAZIONI = "{accountId}/transazioni";
 }
