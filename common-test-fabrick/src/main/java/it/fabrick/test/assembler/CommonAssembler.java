@@ -6,10 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import it.fabrick.test.dto.AmountDTO;
 import it.fabrick.test.dto.BalanceDTO;
+import it.fabrick.test.dto.MoneyTransferDTO;
 import it.fabrick.test.dto.TransactionDTO;
 import it.fabrick.test.dto.ValueDTO;
 import it.fabrick.test.model.BalanceModel;
+import it.fabrick.test.model.OperationModel;
 import it.fabrick.test.model.TransactionModel;
 import it.fabrick.test.model.ValueModel;
 import it.fabrick.test.utility.StringUtility;
@@ -57,6 +60,19 @@ public class CommonAssembler {
 		if (value != null) {
 			output.setEnumeration(value.getEnumeration());
 			output.setValue(value.getValue());
+		}
+		return output;
+	}
+
+	public OperationModel assembleOperation(MoneyTransferDTO transfer, Long accountId) {
+		OperationModel output = new OperationModel();
+		output.setAccountId(accountId);
+		if (transfer != null) {
+			AmountDTO amount = transfer.getAmount();
+			output.setAmountSent(amount.getDebtorAmount());
+			output.setCurrencyUsed(amount.getDebtorCurrency().toString());
+			output.setDirection(transfer.getDirection());
+			output.setFeesAmount(transfer.getFees().stream().mapToDouble(f -> f.getAmount()).sum());
 		}
 		return output;
 	}

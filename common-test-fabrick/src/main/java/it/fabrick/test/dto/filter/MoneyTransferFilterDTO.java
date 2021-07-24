@@ -11,16 +11,16 @@ import lombok.Data;
 public class MoneyTransferFilterDTO implements Serializable {
 
 	private static final long serialVersionUID = 1557219223636897780L;
-	public CreditorFilterDTO creditor;
+	private CreditorFilterDTO creditor;
 	@CustomDate
-	public Date executionDate;
-    public String uri;
-    public String description;
-    public Float amount;
-    public CurrencyEnum currency;
-    public Boolean isUrgent;
-    public Boolean isInstant;
-    public String feeType; //enum?
-    public Long feeAccountId;
-    public TaxReliefFilterDTO taxRelief;
+	private Date executionDate;
+	private String uri;
+    private String description;
+    private Double amount;
+    private CurrencyEnum currency;
+    private Boolean isUrgent;
+    private Boolean isInstant;
+    private String feeType; //enum?
+    private Long feeAccountId;
+    private TaxReliefFilterDTO taxRelief;
 }

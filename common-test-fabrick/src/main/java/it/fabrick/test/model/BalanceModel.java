@@ -12,7 +12,7 @@ public class BalanceModel implements Serializable {
 	private static final long serialVersionUID = 2558532965695747557L;
 	private Long accountId;
 	private Date date;
-	private Float balance;
-	private Float availableBalance;
+	private Double balance;
+	private Double availableBalance;
 	private CurrencyEnum currency;
 }

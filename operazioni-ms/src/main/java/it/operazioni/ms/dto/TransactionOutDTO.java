@@ -19,7 +19,7 @@ public class TransactionOutDTO implements Serializable {
 	@CustomDate
 	private Date valueDate;
 	private ValueOutDTO type;
-	private Float amount;
+	private Double amount;
 	private CurrencyEnum currency;
 	private String description;
 }

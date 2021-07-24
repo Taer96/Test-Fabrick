@@ -19,7 +19,7 @@ public class TransactionModel implements Serializable {
 	@CustomDate
 	private Date valueDate;
 	private ValueModel type;
-	private Float amount;
+	private Double amount;
 	private CurrencyEnum currency;
 	private String description;
 }

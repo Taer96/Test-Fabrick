@@ -11,6 +11,6 @@ public class FeeDTO implements Serializable {
 	private static final long serialVersionUID = 4787959144930802553L;
 	private String feeCode;
 	private String description;
-	private Float amount;
+	private Double amount;
 	private CurrencyEnum currency;
 }

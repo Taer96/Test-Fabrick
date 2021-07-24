@@ -6,4 +6,5 @@ public class EndpointConstants {
 	
 	public static final String SALDO = "{accountId}/saldo";
 	public static final String TRANSAZIONI = "{accountId}/transazioni";
+	public static final String MONEY_TRANSFER = "{accountId}/bonifico";
 }

@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 public class EsitoOutDTO <T> extends EsitoBaseOutDTO {
 
 	private static final long serialVersionUID = 2460351824664843001L;
-	private T parameter;
+	private T payload;
 	
 	public EsitoOutDTO(String status, Integer code, String description) {
 		super(status, code, description);
 	}
 	
-	public EsitoOutDTO(String status, Integer code, String description, T parameter) {
+	public EsitoOutDTO(String status, Integer code, String description, T payload) {
 		super(status, code, description);
-		this.parameter = parameter;
+		this.payload = payload;
 	}
 }

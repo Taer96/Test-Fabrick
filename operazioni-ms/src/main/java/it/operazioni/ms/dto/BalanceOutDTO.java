@@ -14,7 +14,7 @@ public class BalanceOutDTO implements Serializable {
 	private Long accountId;
 	@CustomDate
 	private Date date;
-	private Float balance;
-	private Float availableBalance;
+	private Double balance;
+	private Double availableBalance;
 	private CurrencyEnum currency;
 }

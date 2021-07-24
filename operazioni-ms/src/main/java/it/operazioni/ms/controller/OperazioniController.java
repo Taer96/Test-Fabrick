@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,9 +26,11 @@ import it.fabrick.test.model.TransactionModel;
 import it.fabrick.test.service.OperazioniService;
 import it.operazioni.ms.assembler.OperazioniAssembler;
 import it.operazioni.ms.dto.BalanceOutDTO;
-import it.operazioni.ms.dto.EsitoOutDTO;
 import it.operazioni.ms.dto.EsitoListOutDTO;
+import it.operazioni.ms.dto.EsitoOutDTO;
+import it.operazioni.ms.dto.OperationOutDTO;
 import it.operazioni.ms.dto.TransactionOutDTO;
+import it.operazioni.ms.dto.filter.OperationInDTO;
 
 @RestController
 @RequestMapping(EndpointConstants.BASE_URL)
@@ -55,12 +58,13 @@ public class OperazioniController {
 		try {
 			balance = operazioniService.getBalance(accountId);
 		} catch (FallbackException e) {
-			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, e.getCode(), e.getMessage()), HttpStatus.valueOf(e.getCode()));
+			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()), HttpStatus.valueOf(e.getCode()));
 		}
 		if (balance != null) {
 			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.OK, HttpStatus.OK.value(), ResponseConstants.ACCOUNT_TROVATO,
 					operazioniAssembler.assembleBalance(balance)), HttpStatus.OK);
 		}
+		// non dovrebbe essere possibile non avere dati una volta arrivati qui
 		return null;
 	}
 	
@@ -88,13 +92,28 @@ public class OperazioniController {
 		try {
 			transactions = operazioniService.getTransactions(accountId, fromAccountingDate, toAccountingDate);
 		} catch (FallbackException e) {
-			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.KO, e.getCode(), e.getMessage()),
+			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()),
 					HttpStatus.valueOf(e.getCode()));
 		}
 		if (transactions != null) {
 			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.OK, HttpStatus.OK.value(), ResponseConstants.ACCOUNT_TROVATO, 
 					operazioniAssembler.assembleTransactions(transactions)), HttpStatus.OK);
 		}
+		// non dovrebbe essere possibile non avere dati una volta arrivati qui
 		return null;
 	}
-}
+	
+	/**
+	 * controller per effettuare un bonifico
+	 */
+	@CrossOrigin
+	@PostMapping(value = EndpointConstants.MONEY_TRANSFER, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EsitoOutDTO<OperationOutDTO>> moneyTransfer(@PathVariable Long accountId, OperationInDTO operation) {
+		// non controllo la presenza di accountId, perchè è un parametro required
+		if (!accountId.toString().equals(validId)) {
+			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.FORBIDDEN.value(),
+					ResponseConstants.ACCOUNT_PROBLEMS), HttpStatus.FORBIDDEN);
+		}
+		return null;
+	}
+ }

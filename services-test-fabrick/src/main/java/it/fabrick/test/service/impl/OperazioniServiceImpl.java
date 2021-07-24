@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 import it.fabrick.test.assembler.CommonAssembler;
 import it.fabrick.test.dto.BalanceDTO;
 import it.fabrick.test.dto.ListOutputDTO;
-import it.fabrick.test.dto.ResponseErrorDTO;
+import it.fabrick.test.dto.MoneyTransferDTO;
+import it.fabrick.test.dto.ResponseDTO;
 import it.fabrick.test.dto.TransactionDTO;
+import it.fabrick.test.dto.filter.MoneyTransferFilterDTO;
 import it.fabrick.test.feignclient.OperazioniClient;
+import it.fabrick.test.filter.OperationFilter;
 import it.fabrick.test.model.BalanceModel;
+import it.fabrick.test.model.OperationModel;
 import it.fabrick.test.model.TransactionModel;
 import it.fabrick.test.service.OperazioniService;
 
@@ -27,7 +31,7 @@ public class OperazioniServiceImpl implements OperazioniService {
 	public BalanceModel getBalance(Long accountId) {
 		BalanceModel output = null;
 		// non gestisco a questo livello la FallbackException perchè è una runtime Exception
-		ResponseErrorDTO<BalanceDTO> result = operazioniClient.getSaldoAccount();
+		ResponseDTO<BalanceDTO> result = operazioniClient.getBalance();
 		if (result != null && result.getPayload() != null) {
 			output = assembler.assembleBalance(result.getPayload(), accountId);
 		}
@@ -38,9 +42,21 @@ public class OperazioniServiceImpl implements OperazioniService {
 	public List<TransactionModel> getTransactions(Long accountId, String fromAccountingDate, String toAccountingDate) {
 		List<TransactionModel> output = null;
 		// non gestisco a questo livello la FallbackException perchè è una runtime Exception
-		ResponseErrorDTO<ListOutputDTO<TransactionDTO>> result = operazioniClient.getTransazioni(fromAccountingDate, toAccountingDate);
+		ResponseDTO<ListOutputDTO<TransactionDTO>> result = operazioniClient.getTransactions(fromAccountingDate, toAccountingDate);
 		if (result != null && result.getPayload() != null && !result.getPayload().getList().isEmpty()) {
 			output = assembler.assembleTransactions(result.getPayload().getList(), accountId);
+		}
+		return output;
+	}
+	
+	@Override
+	public OperationModel doMoneyTransfer(Long accountId, OperationFilter filter) {
+		OperationModel output = null;
+		MoneyTransferFilterDTO moneyFilter = new MoneyTransferFilterDTO();
+		
+		ResponseDTO<MoneyTransferDTO> result = operazioniClient.doMoneyTransfer(moneyFilter);
+		if (result != null && result.getPayload() != null) {
+			output = assembler.assembleOperation(result.getPayload(), accountId);
 		}
 		return output;
 	}

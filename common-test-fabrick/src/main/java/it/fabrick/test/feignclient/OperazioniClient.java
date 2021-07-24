@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import it.fabrick.test.dto.BalanceDTO;
 import it.fabrick.test.dto.ListOutputDTO;
 import it.fabrick.test.dto.MoneyTransferDTO;
-import it.fabrick.test.dto.ResponseErrorDTO;
-import it.fabrick.test.dto.ResponseErrorsDTO;
+import it.fabrick.test.dto.ResponseDTO;
 import it.fabrick.test.dto.TransactionDTO;
 import it.fabrick.test.dto.filter.MoneyTransferFilterDTO;
 import it.fabrick.test.feignclient.utility.FeignConfig;
@@ -21,11 +20,11 @@ public interface OperazioniClient {
 
 	// /api/gbs/banking/v4.0/accounts/{accountId}/balance
 	@GetMapping(value = "${endpoint.getSaldo}", consumes = "application/json")
-	ResponseErrorDTO<BalanceDTO> getSaldoAccount();
+	ResponseDTO<BalanceDTO> getBalance();
 	// /api/gbs/banking/v4.0/accounts/{accountId}/payments/money-transfers
 	@PostMapping(value = "${endpoint.transferMoney}", consumes = "application/json")
-	ResponseErrorsDTO<MoneyTransferDTO> trasferisciSoldi(@RequestBody MoneyTransferFilterDTO filter);
+	ResponseDTO<MoneyTransferDTO> doMoneyTransfer(@RequestBody MoneyTransferFilterDTO filter);
 	// /api/gbs/banking/v4.0/accounts/{accountId}/transactions
 	@GetMapping(value = "${endpoint.getTransazioni}", consumes = "application/json")
-	ResponseErrorDTO<ListOutputDTO<TransactionDTO>> getTransazioni(@RequestParam("fromAccountingDate") String fromAccountingDate, @RequestParam("toAccountingDate") String toAccountingDate);
+	ResponseDTO<ListOutputDTO<TransactionDTO>> getTransactions(@RequestParam("fromAccountingDate") String fromAccountingDate, @RequestParam("toAccountingDate") String toAccountingDate);
 }
