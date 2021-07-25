@@ -3,6 +3,7 @@ package it.operazioni.ms.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import it.fabrick.test.annotation.CustomDate;
 import lombok.Data;
 
 @Data
@@ -18,5 +19,6 @@ public class OperationOutDTO implements Serializable {
 	private String currencyUsed;
 	private Double feesAmount;
 	private Double totalSpent;
+	@CustomDate
 	private Date operationDate;
 }

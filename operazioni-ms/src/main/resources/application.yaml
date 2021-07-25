@@ -1,14 +1,13 @@
 application:
     name: operazioni-ms
-    
-server:
-    port: 8080
-    servlet:
-        context-path: /operazioni-ms
 
-feign:
-    hystrix:
-        enabled: true
+credenziali:
+    accountId: 14537780
+    header:
+        auth-Schema: S2S
+        api-Key: FXOVVXXHVCPVPBZXIJOBGUGSKHDNFRRQJP
+        timezone: Europe/Rome
+    idChiave: 3202
     
 endpoint:
     base: https://sandbox.platfr.io/api/gbs/banking/v4.0/accounts
@@ -17,12 +16,23 @@ endpoint:
     getSaldo: /${credenziali.accountId}/balance
     moneyTransfer: /${credenziali.accountId}/payments/money-transfers
     getTransazioni: /${credenziali.accountId}/transactions
-    
-credenziali:
-    accountId: 14537780
-    header:
-        auth-Schema: S2S
-        api-Key: FXOVVXXHVCPVPBZXIJOBGUGSKHDNFRRQJP
-        timezone: Europe/Rome
-    idChiave: 3202
+
+server:
+    port: 8080
+    servlet:
+        context-path: /operazioni-ms
+            
+spring:
+    datasource:
+        driver-class-name: com.mysql.jdbc.Driver
+        password: TestF4brick.
+        url: jdbc:mysql://localhost:8085/fabrick?createDatabaseIfNotExist=true
+        username: fabrick
+    jpa:
+        hibernate:
+            dialect: org.hibernate.dialect.MySQLDialect
+            hbm2ddl:
+                auto: create
+            naming_strategy: org.hibernate.cfg.EJB3NamingStrategy
+            show_sql: true
     

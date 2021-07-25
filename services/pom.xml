@@ -30,6 +30,11 @@
 			<artifactId>common</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>it.fabrick.test</groupId>
+			<artifactId>common-db</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
