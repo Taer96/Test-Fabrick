@@ -5,6 +5,10 @@ server:
     port: 8080
     servlet:
         context-path: /operazioni-ms
+
+feign:
+    hystrix:
+        enabled: true
     
 endpoint:
     base: https://sandbox.platfr.io/api/gbs/banking/v4.0/accounts

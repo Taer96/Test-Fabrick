@@ -64,8 +64,9 @@ public class OperazioniController {
 			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.OK, HttpStatus.OK.value(), ResponseConstants.ACCOUNT_TROVATO,
 					operazioniAssembler.assembleBalance(balance)), HttpStatus.OK);
 		}
-		// non dovrebbe essere possibile non avere dati una volta arrivati qui
-		return null;
+		// per arrivare qui, il sistema deve rispondere senza dati
+		return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.SERVICE_UNAVAILABLE.value(),
+				ResponseConstants.MISSING_DATA), HttpStatus.SERVICE_UNAVAILABLE);
 	}
 	
 	/**
@@ -99,8 +100,9 @@ public class OperazioniController {
 			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.OK, HttpStatus.OK.value(), ResponseConstants.ACCOUNT_TROVATO, 
 					operazioniAssembler.assembleTransactions(transactions)), HttpStatus.OK);
 		}
-		// non dovrebbe essere possibile non avere dati una volta arrivati qui
-		return null;
+		// per arrivare qui, il sistema deve rispondere senza dati
+		return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.KO, HttpStatus.SERVICE_UNAVAILABLE.value(),
+				ResponseConstants.MISSING_DATA), HttpStatus.SERVICE_UNAVAILABLE);
 	}
 	
 	/**
@@ -114,6 +116,8 @@ public class OperazioniController {
 			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.FORBIDDEN.value(),
 					ResponseConstants.ACCOUNT_PROBLEMS), HttpStatus.FORBIDDEN);
 		}
-		return null;
+		// per arrivare qui, il sistema deve rispondere senza dati
+		return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.SERVICE_UNAVAILABLE.value(),
+				ResponseConstants.MISSING_DATA), HttpStatus.SERVICE_UNAVAILABLE);
 	}
  }
