@@ -22,8 +22,10 @@ import it.fabrick.test.constants.EndpointConstants;
 import it.fabrick.test.constants.ResponseConstants;
 import it.fabrick.test.exception.FallbackException;
 import it.fabrick.test.model.BalanceModel;
+import it.fabrick.test.model.OperationModel;
 import it.fabrick.test.model.TransactionModel;
 import it.fabrick.test.service.OperazioniService;
+import it.operazioni.ms.assembler.InToFilterAssembler;
 import it.operazioni.ms.assembler.OperazioniAssembler;
 import it.operazioni.ms.dto.BalanceOutDTO;
 import it.operazioni.ms.dto.EsitoListOutDTO;
@@ -42,6 +44,8 @@ public class OperazioniController {
 	private OperazioniService operazioniService;
 	@Autowired
 	private OperazioniAssembler operazioniAssembler;
+	@Autowired
+	private InToFilterAssembler inToFilterAssembler;
 
 	/**
 	 * controller per ottenere il saldo di un account
@@ -107,6 +111,13 @@ public class OperazioniController {
 	
 	/**
 	 * controller per effettuare un bonifico
+	 * NOTE: non funzionerà mai, mancano dei dati:
+	 * creditor.account.accountCode
+	 * taxRelief.isCondoUpgrade
+	 * taxRelief.creditorFiscalCode
+	 * taxRelief.beneficiaryType
+	 * taxRelief.naturalPersonBeneficiary.fiscalCode1
+	 * taxRelief.legalPersonBeneficiary.fiscalCode
 	 */
 	@CrossOrigin
 	@PostMapping(value = EndpointConstants.MONEY_TRANSFER, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -115,6 +126,17 @@ public class OperazioniController {
 		if (!accountId.toString().equals(validId)) {
 			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.FORBIDDEN.value(),
 					ResponseConstants.ACCOUNT_PROBLEMS), HttpStatus.FORBIDDEN);
+		}
+		OperationModel op = null;
+		try {
+			op = operazioniService.doMoneyTransfer(accountId, inToFilterAssembler.assembleOperationFilter(operation));
+		} catch (FallbackException e) {
+			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()),
+					HttpStatus.valueOf(e.getCode()));
+		}
+		if (op != null) {
+			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.OK, HttpStatus.OK.value(), ResponseConstants.ACCOUNT_TROVATO, 
+					operazioniAssembler.assembleOperation(op)), HttpStatus.OK);
 		}
 		// per arrivare qui, il sistema deve rispondere senza dati
 		return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.SERVICE_UNAVAILABLE.value(),

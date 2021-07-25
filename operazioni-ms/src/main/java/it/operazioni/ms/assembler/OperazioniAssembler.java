@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import it.fabrick.test.model.BalanceModel;
+import it.fabrick.test.model.OperationModel;
 import it.fabrick.test.model.TransactionModel;
 import it.fabrick.test.model.ValueModel;
 import it.operazioni.ms.dto.BalanceOutDTO;
+import it.operazioni.ms.dto.OperationOutDTO;
 import it.operazioni.ms.dto.TransactionOutDTO;
 import it.operazioni.ms.dto.ValueOutDTO;
 
@@ -27,7 +29,6 @@ public class OperazioniAssembler {
 		return output;
 	}
 
-	//TODO: implementare
 	public List<TransactionOutDTO> assembleTransactions(List<TransactionModel> transactions) {
 		List<TransactionOutDTO> output = new ArrayList<>();
 		if (transactions != null) {
@@ -53,6 +54,23 @@ public class OperazioniAssembler {
 		if (value != null) {
 			output.setEnumeration(value.getEnumeration());
 			output.setValue(value.getValue());
+		}
+		return output;
+	}
+
+	public OperationOutDTO assembleOperation(OperationModel op) {
+		OperationOutDTO output = new OperationOutDTO();
+		if (op != null) {
+			output.setAccountId(op.getAccountId());
+			output.setAmount(op.getAmountSent());
+			output.setCurrencyUsed(op.getCurrencyUsed());
+			output.setDirection(op.getDirection());
+			output.setFeesAmount(op.getFeesAmount());
+			output.setOperationDate(op.getOperationDate());
+			output.setReceiverIBAN(op.getReceiverIBAN());
+			output.setReceiverName(op.getReceiverName());
+			output.setStatus(op.getStatus());
+			output.setTotalSpent(op.getTotalSpent());
 		}
 		return output;
 	}

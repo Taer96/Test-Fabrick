@@ -13,6 +13,7 @@ import it.fabrick.test.dto.ListOutputDTO;
 import it.fabrick.test.dto.MoneyTransferDTO;
 import it.fabrick.test.dto.ResponseDTO;
 import it.fabrick.test.dto.TransactionDTO;
+import it.fabrick.test.dto.filter.CreditorFilterDTO;
 import it.fabrick.test.dto.filter.MoneyTransferFilterDTO;
 import it.fabrick.test.feignclient.OperazioniClient;
 import it.fabrick.test.filter.OperationFilter;
@@ -67,7 +68,13 @@ public class OperazioniServiceImpl implements OperazioniService {
 	public OperationModel doMoneyTransfer(Long accountId, OperationFilter filter) {
 		OperationModel output = null;
 		MoneyTransferFilterDTO moneyFilter = new MoneyTransferFilterDTO();
-		
+		moneyFilter.setAmount(filter.getAmount());
+		CreditorFilterDTO creditor = new CreditorFilterDTO();
+		creditor.setName(filter.getReceiverName());
+		moneyFilter.setCreditor(creditor);
+		moneyFilter.setCurrency(filter.getCurrency());
+		moneyFilter.setDescription(filter.getDescription());
+		moneyFilter.setExecutionDate(filter.getExecutionDate());
 		ResponseDTO<MoneyTransferDTO> result = operazioniClient.doMoneyTransfer(moneyFilter);
 		if (result != null && result.getPayload() != null) {
 			output = assembler.assembleOperation(result.getPayload(), accountId);

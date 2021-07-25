@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import it.fabrick.test.dto.AmountDTO;
 import it.fabrick.test.dto.BalanceDTO;
+import it.fabrick.test.dto.CreditorDTO;
 import it.fabrick.test.dto.MoneyTransferDTO;
 import it.fabrick.test.dto.TransactionDTO;
 import it.fabrick.test.dto.ValueDTO;
@@ -73,6 +74,12 @@ public class CommonAssembler {
 			output.setCurrencyUsed(amount.getDebtorCurrency().toString());
 			output.setDirection(transfer.getDirection());
 			output.setFeesAmount(transfer.getFees().stream().mapToDouble(f -> f.getAmount()).sum());
+			output.setOperationDate(transfer.getCreatedDatetime());
+			CreditorDTO creditor = transfer.getCreditor();
+			output.setReceiverIBAN(creditor.getAccount().getAccountCode());
+			output.setReceiverName(creditor.getName());
+			output.setStatus(transfer.getStatus());
+			output.setTotalSpent(output.getAmountSent() + output.getFeesAmount());
 		}
 		return output;
 	}
