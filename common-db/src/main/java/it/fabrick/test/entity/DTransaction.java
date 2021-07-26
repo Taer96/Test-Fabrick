@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table
+@Table(name="D_TRANSACTION")
 @Data
 public class DTransaction implements Serializable {
 

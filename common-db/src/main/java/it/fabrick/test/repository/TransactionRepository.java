@@ -1,9 +1,10 @@
 package it.fabrick.test.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import it.fabrick.test.entity.DTransaction;
 
-public interface TransactionRepository extends JpaRepository<DTransaction, Long> {
+@Repository
+public interface TransactionRepository extends BaseRepository<DTransaction> {
 
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import it.fabrick.test.constants.DateConstants;
 import it.fabrick.test.constants.EndpointConstants;
 import it.fabrick.test.constants.ResponseConstants;
-import it.fabrick.test.exception.FallbackException;
+import it.fabrick.test.exception.RestClientException;
 import it.fabrick.test.model.BalanceModel;
 import it.fabrick.test.model.OperationModel;
 import it.fabrick.test.model.TransactionModel;
@@ -61,7 +62,7 @@ public class OperazioniController {
 		BalanceModel balance = null;
 		try {
 			balance = operazioniService.getBalance(accountId);
-		} catch (FallbackException e) {
+		} catch (RestClientException e) {
 			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()), HttpStatus.valueOf(e.getCode()));
 		}
 		if (balance != null) {
@@ -96,7 +97,7 @@ public class OperazioniController {
 		List<TransactionModel> transactions = null;
 		try {
 			transactions = operazioniService.getTransactions(accountId, fromAccountingDate, toAccountingDate);
-		} catch (FallbackException e) {
+		} catch (RestClientException e) {
 			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()),
 					HttpStatus.valueOf(e.getCode()));
 		}
@@ -117,11 +118,10 @@ public class OperazioniController {
 	 * taxRelief.creditorFiscalCode
 	 * taxRelief.beneficiaryType
 	 * taxRelief.naturalPersonBeneficiary.fiscalCode1
-	 * taxRelief.legalPersonBeneficiary.fiscalCode
 	 */
 	@CrossOrigin
 	@PostMapping(value = EndpointConstants.MONEY_TRANSFER, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<EsitoOutDTO<OperationOutDTO>> moneyTransfer(@PathVariable Long accountId, OperationInDTO operation) {
+	public ResponseEntity<EsitoOutDTO<OperationOutDTO>> moneyTransfer(@PathVariable Long accountId, @RequestBody OperationInDTO operation) {
 		// non controllo la presenza di accountId, perchè è un parametro required
 		if (!accountId.toString().equals(validId)) {
 			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.FORBIDDEN.value(),
@@ -130,7 +130,7 @@ public class OperazioniController {
 		OperationModel op = null;
 		try {
 			op = operazioniService.doMoneyTransfer(accountId, inToFilterAssembler.assembleOperationFilter(operation));
-		} catch (FallbackException e) {
+		} catch (RestClientException e) {
 			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()),
 					HttpStatus.valueOf(e.getCode()));
 		}

@@ -24,9 +24,9 @@ server:
             
 spring:
     datasource:
-        driver-class-name: com.mysql.jdbc.Driver
+        driver-class-name: com.mysql.cj.jdbc.Driver
         password: TestF4brick.
-        url: jdbc:mysql://localhost:8085/fabrick?createDatabaseIfNotExist=true
+        url: jdbc:mysql://localhost:3306/fabrick
         username: fabrick
     jpa:
         hibernate:

@@ -13,18 +13,17 @@ import it.fabrick.test.dto.ResponseDTO;
 import it.fabrick.test.dto.TransactionDTO;
 import it.fabrick.test.dto.filter.MoneyTransferFilterDTO;
 import it.fabrick.test.feignclient.utility.FeignConfig;
-import it.fabrick.test.feignclient.utility.OperazioniFallbackFactory;
 
-@FeignClient(value = "${endpoint.name.operazioni}", url = "${endpoint.base}", configuration = FeignConfig.class, fallbackFactory = OperazioniFallbackFactory.class)
+@FeignClient(value = "${endpoint.name.operazioni}", url = "${endpoint.base}", configuration = FeignConfig.class)
 public interface OperazioniClient {
 
 	// /api/gbs/banking/v4.0/accounts/{accountId}/balance
-	@GetMapping(value = "${endpoint.getSaldo}", consumes = "application/json")
+	@GetMapping(value = "${endpoint.getSaldo}", produces = "application/json")
 	ResponseDTO<BalanceDTO> getBalance();
 	// /api/gbs/banking/v4.0/accounts/{accountId}/payments/money-transfers
-	@PostMapping(value = "${endpoint.transferMoney}", consumes = "application/json")
+	@PostMapping(value = "${endpoint.moneyTransfer}", produces = "application/json", consumes = "application/json")
 	ResponseDTO<MoneyTransferDTO> doMoneyTransfer(@RequestBody MoneyTransferFilterDTO filter);
 	// /api/gbs/banking/v4.0/accounts/{accountId}/transactions
-	@GetMapping(value = "${endpoint.getTransazioni}", consumes = "application/json")
+	@GetMapping(value = "${endpoint.getTransazioni}", produces = "application/json")
 	ResponseDTO<ListOutputDTO<TransactionDTO>> getTransactions(@RequestParam("fromAccountingDate") String fromAccountingDate, @RequestParam("toAccountingDate") String toAccountingDate);
 }
