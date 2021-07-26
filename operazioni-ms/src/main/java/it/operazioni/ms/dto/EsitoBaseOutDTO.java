@@ -10,12 +10,10 @@ import lombok.NoArgsConstructor;
 abstract class EsitoBaseOutDTO implements Serializable {
 
 	private static final long serialVersionUID = 661246820014210843L;
-	private String status;
-	private Integer code; 
+	private String code; 
 	private String description;
 	
-	public EsitoBaseOutDTO(String status, Integer code, String description) {
-		this.status = status;
+	public EsitoBaseOutDTO(String code, String description) {
 		this.code = code;
 		this.description = description;
 	}

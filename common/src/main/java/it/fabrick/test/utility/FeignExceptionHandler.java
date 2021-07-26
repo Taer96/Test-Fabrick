@@ -22,9 +22,11 @@ public class FeignExceptionHandler {
 		try {
 			response = new ObjectMapper().readValue(fe.contentUTF8(), ResponseDTO.class);
 		} catch (Exception e) {
-			return new RestClientException(fe.status(), fe.getMessage(), ErrorConstants.MISSING_ERROR);
+			return new RestClientException(ErrorConstants.MISSING_ERROR, fe.getMessage(), ErrorConstants.MISSING_ERROR, fe.status());
 		}
 		List<String> errorList = response.getErrors().stream().map(e -> e.getDescription()).collect(Collectors.toList());
-		return new RestClientException(fe.status(), fe.getMessage(), String.join(ValueConstants.NEW_LINE, errorList));
+		List<String> statusList = response.getErrors().stream().map(e -> e.getCode()).collect(Collectors.toList());
+		return new RestClientException(fe.getMessage(), String.join(ValueConstants.NEW_LINE, statusList),
+				String.join(ValueConstants.NEW_LINE, errorList), fe.status());
 	}
 }

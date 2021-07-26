@@ -1,7 +1,7 @@
 package it.fabrick.test.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,15 @@ import it.fabrick.test.dto.filter.CreditorFilterDTO;
 import it.fabrick.test.dto.filter.MoneyTransferFilterDTO;
 import it.fabrick.test.dto.filter.NaturalPersonBeneficiaryFilterDTO;
 import it.fabrick.test.dto.filter.TaxReliefFilterDTO;
+import it.fabrick.test.entity.DAccount;
+import it.fabrick.test.entity.DTransaction;
 import it.fabrick.test.exception.RestClientException;
 import it.fabrick.test.feignclient.OperazioniClient;
 import it.fabrick.test.filter.OperationFilter;
 import it.fabrick.test.model.BalanceModel;
 import it.fabrick.test.model.OperationModel;
 import it.fabrick.test.model.TransactionModel;
+import it.fabrick.test.repository.AccountRepository;
 import it.fabrick.test.repository.TransactionRepository;
 import it.fabrick.test.service.OperazioniService;
 import it.fabrick.test.utility.FeignExceptionHandler;
@@ -35,11 +38,13 @@ public class OperazioniServiceImpl implements OperazioniService {
 	@Autowired
 	protected CommonAssembler assembler;
 	@Autowired
+	protected EntityAssembler entityAssembler;
+	@Autowired
 	protected OperazioniClient operazioniClient;
 	@Autowired
 	protected TransactionRepository transactionRepository;
 	@Autowired
-	protected EntityAssembler entityAssembler;
+	protected AccountRepository accountRepository;
 	@Autowired
 	protected FeignExceptionHandler feignHandler;
 	
@@ -72,16 +77,25 @@ public class OperazioniServiceImpl implements OperazioniService {
 			throw new RestClientException(e.getMessage());
 		}
 		if (result != null && result.getPayload() != null && !result.getPayload().getList().isEmpty()) {
+			DAccount account = accountRepository.findById(accountId).orElse(null);
+			if (account == null) {
+				account = new DAccount();
+				account.setAccountId(accountId);
+				account.setTransactions(new ArrayList<>());
+				accountRepository.saveAndFlush(account);
+			}
 			output = assembler.assembleTransactions(result.getPayload().getList(), accountId);
 			// non è prevista la rimozione dei record dalla tabella perchè non dovrebbe essere
 			// possibile cancellare operazioni passate
-			List<Long> ids = transactionRepository.findAll().stream().map(t -> t.getTransactionId()).collect(Collectors.toList());
 			for (TransactionModel t : output) {
-				if (!ids.contains(t.getTransactionId())) {
-					transactionRepository.save(entityAssembler.assembleTransaction(t));
+				if (!transactionRepository.existsById(t.getTransactionId())) {
+					DTransaction transaction = entityAssembler.assembleTransaction(t);
+					transaction.setAccount(account);
+					transactionRepository.saveAndFlush(transaction);
+					account.getTransactions().add(transaction);
+					accountRepository.saveAndFlush(account);
 				}
 			}
-			transactionRepository.flush();
 		}
 		return output;
 	}

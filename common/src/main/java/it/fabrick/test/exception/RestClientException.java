@@ -13,54 +13,21 @@ import lombok.EqualsAndHashCode;
 public class RestClientException extends RuntimeException {
 
 	private static final long serialVersionUID = -5932595197192955509L;
-	private final Integer code;
+	private final String code;
 	private final String errors;
-
-	public RestClientException(Integer code, String message) {
-		super(message);
-		this.code = code;
-		this.errors = null;
-	}
+	private final Integer statusCode;
 
 	public RestClientException(String message) {
 		super(message);
 		this.code = null;
 		this.errors = null;
+		this.statusCode = 500;
 	}
 
-	public RestClientException(String message, Throwable cause){
-        super(message, cause);
-        this.code = null;
-        this.errors = null;
-	}	
-
-	public RestClientException(Integer code, String message, Throwable cause){
-        super(message, cause);
-        this.code = code;
-        this.errors = null;
-	}
-	
-	public RestClientException(Integer code, String message, String errors) {
+	public RestClientException(String message, String code, String errors, Integer statusCode) {
 		super(message);
 		this.code = code;
 		this.errors = errors;
-	}
-
-	public RestClientException(String message, String errors) {
-		super(message);
-		this.code = null;
-		this.errors = errors;
-	}
-
-	public RestClientException(String message, Throwable cause, String errors){
-        super(message, cause);
-        this.code = null;
-        this.errors = errors;
-	}	
-
-	public RestClientException(Integer code, String message, Throwable cause, String errors){
-        super(message, cause);
-        this.code = code;
-        this.errors = errors;
+		this.statusCode = statusCode;
 	}
 }

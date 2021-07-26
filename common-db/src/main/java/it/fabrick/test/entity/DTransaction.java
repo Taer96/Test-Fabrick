@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -30,4 +32,7 @@ public class DTransaction implements Serializable {
 	private Date accountingDate;
 	@Column(name = "value_date", nullable = false)
 	private Date valueDate;
+	@ManyToOne
+	@JoinColumn(name = "fk_account", nullable = false)
+	private DAccount account;
 }

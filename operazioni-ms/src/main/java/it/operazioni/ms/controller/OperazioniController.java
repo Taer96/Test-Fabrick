@@ -38,7 +38,7 @@ import it.operazioni.ms.dto.filter.OperationInDTO;
 @RestController
 @RequestMapping(EndpointConstants.BASE_URL)
 public class OperazioniController {
-	
+
 	@Value("${credenziali.accountId}")
 	private String validId;
 	@Autowired
@@ -56,24 +56,25 @@ public class OperazioniController {
 	public ResponseEntity<EsitoOutDTO<BalanceOutDTO>> getSaldo(@PathVariable Long accountId) {
 		// non controllo la presenza di accountId, perchè è un parametro required
 		if (!accountId.toString().equals(validId)) {
-			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.FORBIDDEN.value(), 
+			return new ResponseEntity<>(new EsitoOutDTO<>(HttpStatus.FORBIDDEN.toString(), 
 					ResponseConstants.ACCOUNT_PROBLEMS), HttpStatus.FORBIDDEN);
 		}
 		BalanceModel balance = null;
 		try {
 			balance = operazioniService.getBalance(accountId);
 		} catch (RestClientException e) {
-			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()), HttpStatus.valueOf(e.getCode()));
+			return new ResponseEntity<>(new EsitoOutDTO<>(e.getCode(), e.getErrors()),
+					HttpStatus.valueOf(e.getStatusCode()));
 		}
 		if (balance != null) {
-			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.OK, HttpStatus.OK.value(), ResponseConstants.ACCOUNT_TROVATO,
+			return new ResponseEntity<>(new EsitoOutDTO<>(HttpStatus.OK.toString(), ResponseConstants.ACCOUNT_TROVATO,
 					operazioniAssembler.assembleBalance(balance)), HttpStatus.OK);
 		}
 		// per arrivare qui, il sistema deve rispondere senza dati
-		return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.SERVICE_UNAVAILABLE.value(),
+		return new ResponseEntity<>(new EsitoOutDTO<>(HttpStatus.SERVICE_UNAVAILABLE.toString(),
 				ResponseConstants.MISSING_DATA), HttpStatus.SERVICE_UNAVAILABLE);
 	}
-	
+
 	/**
 	 * controller per ottenere le transazioni di un account
 	 */
@@ -83,7 +84,7 @@ public class OperazioniController {
 			@RequestParam String toAccountingDate) {
 		// non controllo la presenza di accountId, perchè è un parametro required
 		if (!accountId.toString().equals(validId)) {
-			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.KO, HttpStatus.FORBIDDEN.value(),
+			return new ResponseEntity<>(new EsitoListOutDTO<>(HttpStatus.FORBIDDEN.toString(),
 					ResponseConstants.ACCOUNT_PROBLEMS), HttpStatus.FORBIDDEN);
 		}
 		try {
@@ -91,25 +92,25 @@ public class OperazioniController {
 			format.parse(fromAccountingDate);
 			format.parse(toAccountingDate);
 		} catch (ParseException e) {
-			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.KO, HttpStatus.BAD_REQUEST.value(),
+			return new ResponseEntity<>(new EsitoListOutDTO<>(HttpStatus.BAD_REQUEST.toString(),
 					ResponseConstants.WRONG_PATTERN), HttpStatus.BAD_REQUEST);
 		}
 		List<TransactionModel> transactions = null;
 		try {
 			transactions = operazioniService.getTransactions(accountId, fromAccountingDate, toAccountingDate);
 		} catch (RestClientException e) {
-			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()),
-					HttpStatus.valueOf(e.getCode()));
+			return new ResponseEntity<>(new EsitoListOutDTO<>(e.getCode(), e.getErrors()),
+					HttpStatus.valueOf(e.getStatusCode()));
 		}
 		if (transactions != null) {
-			return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.OK, HttpStatus.OK.value(), ResponseConstants.ACCOUNT_TROVATO, 
+			return new ResponseEntity<>(new EsitoListOutDTO<>(HttpStatus.OK.toString(), ResponseConstants.ACCOUNT_TROVATO, 
 					operazioniAssembler.assembleTransactions(transactions)), HttpStatus.OK);
 		}
 		// per arrivare qui, il sistema deve rispondere senza dati
-		return new ResponseEntity<>(new EsitoListOutDTO<>(ResponseConstants.KO, HttpStatus.SERVICE_UNAVAILABLE.value(),
+		return new ResponseEntity<>(new EsitoListOutDTO<>(HttpStatus.SERVICE_UNAVAILABLE.toString(),
 				ResponseConstants.MISSING_DATA), HttpStatus.SERVICE_UNAVAILABLE);
 	}
-	
+
 	/**
 	 * controller per effettuare un bonifico
 	 * NOTE: non funzionerà mai, mancano dei dati:
@@ -124,22 +125,22 @@ public class OperazioniController {
 	public ResponseEntity<EsitoOutDTO<OperationOutDTO>> moneyTransfer(@PathVariable Long accountId, @RequestBody OperationInDTO operation) {
 		// non controllo la presenza di accountId, perchè è un parametro required
 		if (!accountId.toString().equals(validId)) {
-			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.FORBIDDEN.value(),
+			return new ResponseEntity<>(new EsitoOutDTO<>(HttpStatus.FORBIDDEN.toString(),
 					ResponseConstants.ACCOUNT_PROBLEMS), HttpStatus.FORBIDDEN);
 		}
 		OperationModel op = null;
 		try {
 			op = operazioniService.doMoneyTransfer(accountId, inToFilterAssembler.assembleOperationFilter(operation));
 		} catch (RestClientException e) {
-			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, e.getCode(), e.getErrors()),
-					HttpStatus.valueOf(e.getCode()));
+			return new ResponseEntity<>(new EsitoOutDTO<>(e.getCode(), e.getErrors()),
+					HttpStatus.valueOf(e.getStatusCode()));
 		}
 		if (op != null) {
-			return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.OK, HttpStatus.OK.value(), ResponseConstants.ACCOUNT_TROVATO, 
+			return new ResponseEntity<>(new EsitoOutDTO<>(HttpStatus.OK.toString(), ResponseConstants.ACCOUNT_TROVATO, 
 					operazioniAssembler.assembleOperation(op)), HttpStatus.OK);
 		}
 		// per arrivare qui, il sistema deve rispondere senza dati
-		return new ResponseEntity<>(new EsitoOutDTO<>(ResponseConstants.KO, HttpStatus.SERVICE_UNAVAILABLE.value(),
+		return new ResponseEntity<>(new EsitoOutDTO<>(HttpStatus.SERVICE_UNAVAILABLE.toString(),
 				ResponseConstants.MISSING_DATA), HttpStatus.SERVICE_UNAVAILABLE);
 	}
- }
+}
